@@ -9,31 +9,42 @@ struct AdditionalCost: Codable, Identifiable {
 
 struct Trip: Identifiable, Codable {
     let id: UUID
-    let carId: UUID
     var date: Date
     var distance: Double
     var purpose: String
     var zone: TripZone
-    var participantIds: Set<UUID>
+    var participantIds: [UUID]
     var additionalCosts: [AdditionalCost]
+    var carId: UUID
     
     var cost: Double {
         let distanceCost = distance * zone.ratePerKm
-        return distanceCost
+        let additionalCostsSum = additionalCosts.reduce(0) { $0 + $1.amount }
+        return distanceCost + additionalCostsSum
     }
     
-    func costPerParticipant() -> Double {
+    var costPerParticipant: Double {
+        guard !participantIds.isEmpty else { return 0 }
         return cost / Double(participantIds.count)
     }
     
-    init(id: UUID = UUID(), carId: UUID, date: Date = Date(), distance: Double, purpose: String, zone: TripZone, participantIds: Set<UUID>, additionalCosts: [AdditionalCost] = []) {
+    init(
+        id: UUID = UUID(),
+        date: Date,
+        distance: Double,
+        purpose: String,
+        zone: TripZone,
+        participantIds: [UUID],
+        carId: UUID,
+        additionalCosts: [AdditionalCost] = []
+    ) {
         self.id = id
-        self.carId = carId
         self.date = date
         self.distance = distance
         self.purpose = purpose
         self.zone = zone
         self.participantIds = participantIds
+        self.carId = carId
         self.additionalCosts = additionalCosts
     }
 } 

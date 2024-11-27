@@ -3,6 +3,7 @@ import MapKit
 
 struct MapDistanceView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var commonLocationsViewModel: CommonLocationsViewModel
     @StateObject private var locationManager = LocationManager()
     @StateObject private var startLocationSearch = LocationSearchViewModel()
     @StateObject private var endLocationSearch = LocationSearchViewModel()
@@ -18,13 +19,6 @@ struct MapDistanceView: View {
             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         )
     )
-    
-    private let commonLocations = [
-        "Oslo Central Station": "Jernbanetorget 1, Oslo",
-        "Oslo Airport": "Edvard Munchs veg, Gardermoen",
-        "Oslo City Hall": "Rådhusplassen 1, Oslo",
-        "University of Oslo": "Problemveien 7, Oslo"
-    ]
     
     @State private var showingError = false
     @State private var errorMessage = ""
@@ -42,26 +36,40 @@ struct MapDistanceView: View {
         }
     }
     
+    @FocusState private var focusedField: SearchField?
+    
+    private enum SearchField {
+        case start
+        case end
+    }
+    
     private func handleAddressSelection(address: String, isStart: Bool) {
         Task {
             do {
                 let location = try await locationManager.geocodeAddress(address)
-                if isStart {
-                    locationManager.startLocation = location
-                    startLocationSearch.searchResults = []
-                    startAddress = address
-                } else {
-                    locationManager.endLocation = location
-                    endLocationSearch.searchResults = []
-                    endAddress = address
-                }
                 
-                if locationManager.startLocation != nil && locationManager.endLocation != nil {
-                    try await locationManager.calculateRoute()
-                    distance = String(format: "%.1f", locationManager.distance / 1000)
+                await MainActor.run {
+                    if isStart {
+                        startAddress = address
+                        locationManager.startLocation = location
+                        startLocationSearch.clearResults()
+                        focusedField = nil
+                    } else {
+                        endAddress = address
+                        locationManager.endLocation = location
+                        endLocationSearch.clearResults()
+                        focusedField = nil
+                    }
+                    
+                    if locationManager.startLocation != nil && locationManager.endLocation != nil {
+                        Task {
+                            try await locationManager.calculateRoute()
+                            distance = String(format: "%.1f", locationManager.distance / 1000)
+                        }
+                    }
+                    
+                    updateMapRegion()
                 }
-                
-                updateMapRegion()
             } catch {
                 errorMessage = error.localizedDescription
                 showingError = true
@@ -70,38 +78,67 @@ struct MapDistanceView: View {
     }
     
     private func useCurrentLocation(isStart: Bool) {
+        // First request location permission and start updates
+        locationManager.requestLocationPermission()
+        locationManager.startUpdatingLocation()
+        
+        // Create a task to wait for current location
         Task {
-            guard let currentLocation = locationManager.currentLocation else {
-                // Show error if location is not available
-                return
+            // Wait for up to 5 seconds for location
+            for _ in 0..<50 {
+                if let currentLocation = locationManager.currentLocation {
+                    let location = CLLocation(
+                        latitude: currentLocation.latitude,
+                        longitude: currentLocation.longitude
+                    )
+                    
+                    do {
+                        let placemarks = try await CLGeocoder().reverseGeocodeLocation(location)
+                        if let placemark = placemarks.first {
+                            // Construct a meaningful address string
+                            let address = [
+                                placemark.thoroughfare,
+                                placemark.subThoroughfare,
+                                placemark.locality,
+                                placemark.postalCode
+                            ]
+                            .compactMap { $0 }
+                            .joined(separator: " ")
+                            
+                            await MainActor.run {
+                                if isStart {
+                                    startAddress = address
+                                    locationManager.startLocation = currentLocation
+                                } else {
+                                    endAddress = address
+                                    locationManager.endLocation = currentLocation
+                                }
+                                
+                                if locationManager.startLocation != nil && locationManager.endLocation != nil {
+                                    Task {
+                                        try await locationManager.calculateRoute()
+                                        distance = String(format: "%.1f", locationManager.distance / 1000)
+                                    }
+                                }
+                                
+                                updateMapRegion()
+                            }
+                            return
+                        }
+                    } catch {
+                        await MainActor.run {
+                            errorMessage = "Failed to get address: \(error.localizedDescription)"
+                            showingError = true
+                        }
+                    }
+                }
+                try? await Task.sleep(nanoseconds: 100_000_000) // Wait 0.1 seconds before trying again
             }
             
-            let location = CLLocation(
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude
-            )
-            
-            do {
-                let placemarks = try await CLGeocoder().reverseGeocodeLocation(location)
-                if let placemark = placemarks.first,
-                   let address = placemark.thoroughfare ?? placemark.name {
-                    if isStart {
-                        startAddress = address
-                        locationManager.startLocation = currentLocation
-                    } else {
-                        endAddress = address
-                        locationManager.endLocation = currentLocation
-                    }
-                    
-                    if locationManager.startLocation != nil && locationManager.endLocation != nil {
-                        try await locationManager.calculateRoute()
-                        distance = String(format: "%.1f", locationManager.distance / 1000)
-                    }
-                    
-                    updateMapRegion()
-                }
-            } catch {
-                print("Geocoding error: \(error.localizedDescription)")
+            // If we get here, we timed out waiting for location
+            await MainActor.run {
+                errorMessage = "Timeout waiting for location. Please try again."
+                showingError = true
             }
         }
     }
@@ -141,22 +178,28 @@ struct MapDistanceView: View {
                     throw LocationManager.LocationError.invalidAddress
                 }
                 
-                if isStart {
-                    locationManager.startLocation = coordinate
-                    startLocationSearch.searchResults = []
-                    startAddress = result.title
-                } else {
-                    locationManager.endLocation = coordinate
-                    endLocationSearch.searchResults = []
-                    endAddress = result.title
+                await MainActor.run {
+                    if isStart {
+                        startAddress = result.title
+                        locationManager.startLocation = coordinate
+                        startLocationSearch.clearResults()
+                        focusedField = nil
+                    } else {
+                        endAddress = result.title
+                        locationManager.endLocation = coordinate
+                        endLocationSearch.clearResults()
+                        focusedField = nil
+                    }
+                    
+                    if locationManager.startLocation != nil && locationManager.endLocation != nil {
+                        Task {
+                            try await locationManager.calculateRoute()
+                            distance = String(format: "%.1f", locationManager.distance / 1000)
+                        }
+                    }
+                    
+                    updateMapRegion()
                 }
-                
-                if locationManager.startLocation != nil && locationManager.endLocation != nil {
-                    try await locationManager.calculateRoute()
-                    distance = String(format: "%.1f", locationManager.distance / 1000)
-                }
-                
-                updateMapRegion()
             } catch {
                 errorMessage = error.localizedDescription
                 showingError = true
@@ -198,39 +241,33 @@ struct MapDistanceView: View {
                                 .foregroundStyle(.green)
                                 .frame(width: 44, height: 44)
                             
-                            TextField("Start Location", text: $startAddress)
+                            let startTextField = TextField("Start Location", text: $startAddress)
                                 .textFieldStyle(.roundedBorder)
+                                .focused($focusedField, equals: .start)
+                            
+                            let startTextFieldWithHandlers = startTextField
                                 .onChange(of: startAddress) { _, newValue in
                                     startLocationSearch.updateSearchText(newValue)
                                 }
+                                .onChange(of: focusedField) { _, newValue in
+                                    if newValue != .start {
+                                        startLocationSearch.clearResults()
+                                    }
+                                }
                             
-                            Menu {
-                                if !locationStatusMessage.isEmpty {
-                                    Text(locationStatusMessage)
-                                        .foregroundStyle(.secondary)
-                                        .font(.caption)
-                                } else {
-                                    Button {
-                                        useCurrentLocation(isStart: true)
-                                    } label: {
-                                        Label("Current Location", systemImage: "location.fill")
-                                    }
+                            startTextFieldWithHandlers
+                            
+                            // Start location menu
+                            LocationOptionsMenu(
+                                locationStatusMessage: locationStatusMessage,
+                                commonLocations: commonLocationsViewModel.locationsDictionary,
+                                onCurrentLocation: { useCurrentLocation(isStart: true) },
+                                onLocationSelected: { name in
+                                    let address = commonLocationsViewModel.locationsDictionary[name] ?? ""
+                                    startAddress = address
+                                    handleAddressSelection(address: address, isStart: true)
                                 }
-                                
-                                Divider()
-                                
-                                ForEach(Array(commonLocations.keys.sorted()), id: \.self) { name in
-                                    Button(name) {
-                                        startAddress = commonLocations[name] ?? ""
-                                        handleAddressSelection(address: startAddress, isStart: true)
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "ellipsis.circle.fill")
-                                    .font(.title3)
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 44, height: 44)
-                            }
+                            )
                         }
                         
                         // End location
@@ -239,39 +276,33 @@ struct MapDistanceView: View {
                                 .foregroundStyle(.red)
                                 .frame(width: 44, height: 44)
                             
-                            TextField("End Location", text: $endAddress)
+                            let endTextField = TextField("End Location", text: $endAddress)
                                 .textFieldStyle(.roundedBorder)
+                                .focused($focusedField, equals: .end)
+                            
+                            let endTextFieldWithHandlers = endTextField
                                 .onChange(of: endAddress) { _, newValue in
                                     endLocationSearch.updateSearchText(newValue)
                                 }
+                                .onChange(of: focusedField) { _, newValue in
+                                    if newValue != .end {
+                                        endLocationSearch.clearResults()
+                                    }
+                                }
                             
-                            Menu {
-                                if !locationStatusMessage.isEmpty {
-                                    Text(locationStatusMessage)
-                                        .foregroundStyle(.secondary)
-                                        .font(.caption)
-                                } else {
-                                    Button {
-                                        useCurrentLocation(isStart: false)
-                                    } label: {
-                                        Label("Current Location", systemImage: "location.fill")
-                                    }
+                            endTextFieldWithHandlers
+                            
+                            // End location menu
+                            LocationOptionsMenu(
+                                locationStatusMessage: locationStatusMessage,
+                                commonLocations: commonLocationsViewModel.locationsDictionary,
+                                onCurrentLocation: { useCurrentLocation(isStart: false) },
+                                onLocationSelected: { name in
+                                    let address = commonLocationsViewModel.locationsDictionary[name] ?? ""
+                                    endAddress = address
+                                    handleAddressSelection(address: address, isStart: false)
                                 }
-                                
-                                Divider()
-                                
-                                ForEach(Array(commonLocations.keys.sorted()), id: \.self) { name in
-                                    Button(name) {
-                                        endAddress = commonLocations[name] ?? ""
-                                        handleAddressSelection(address: endAddress, isStart: false)
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "ellipsis.circle.fill")
-                                    .font(.title3)
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 44, height: 44)
-                            }
+                            )
                         }
                     }
                     .padding(16)
@@ -280,24 +311,14 @@ struct MapDistanceView: View {
                     // Search results
                     if !startLocationSearch.searchResults.isEmpty || !endLocationSearch.searchResults.isEmpty {
                         ScrollView {
-                            VStack(alignment: .leading, spacing: 0) {
+                            LazyVStack(alignment: .leading, spacing: 0) {
                                 if !startLocationSearch.searchResults.isEmpty {
                                     ForEach(startLocationSearch.searchResults, id: \.self) { result in
                                         Button {
                                             handleSearchResultSelection(result: result, isStart: true)
                                         } label: {
-                                            VStack(alignment: .leading, spacing: 4) {
-                                                Text(result.title)
-                                                    .foregroundStyle(.primary)
-                                                Text(result.subtitle)
-                                                    .font(.caption)
-                                                    .foregroundStyle(.secondary)
-                                            }
-                                            .padding(.horizontal, 16)
-                                            .padding(.vertical, 8)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            SearchResultRow(title: result.title, subtitle: result.subtitle)
                                         }
-                                        Divider()
                                     }
                                 }
                                 
@@ -306,18 +327,8 @@ struct MapDistanceView: View {
                                         Button {
                                             handleSearchResultSelection(result: result, isStart: false)
                                         } label: {
-                                            VStack(alignment: .leading, spacing: 4) {
-                                                Text(result.title)
-                                                    .foregroundStyle(.primary)
-                                                Text(result.subtitle)
-                                                    .font(.caption)
-                                                    .foregroundStyle(.secondary)
-                                            }
-                                            .padding(.horizontal, 16)
-                                            .padding(.vertical, 8)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            SearchResultRow(title: result.title, subtitle: result.subtitle)
                                         }
-                                        Divider()
                                     }
                                 }
                             }
@@ -368,4 +379,70 @@ struct MapDistanceView: View {
             locationManager.stopUpdatingLocation()
         }
     }
-} 
+}
+
+// Extract search result row to a separate view for better performance
+struct SearchResultRow: View {
+    let title: String
+    let subtitle: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .foregroundStyle(.primary)
+            Text(subtitle)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+    }
+}
+
+struct LocationOptionsMenu: View {
+    let locationStatusMessage: String
+    let commonLocations: [String: String]
+    let onCurrentLocation: () -> Void
+    let onLocationSelected: (String) -> Void
+    
+    var body: some View {
+        Menu {
+            if !locationStatusMessage.isEmpty {
+                Text(locationStatusMessage)
+                    .foregroundStyle(.secondary)
+                    .font(.caption)
+            } else {
+                Button {
+                    onCurrentLocation()
+                } label: {
+                    Label("Current Location", systemImage: "location.fill")
+                }
+            }
+            
+            Divider()
+            
+            ForEach(Array(commonLocations.keys.sorted()), id: \.self) { name in
+                Button(name) {
+                    onLocationSelected(name)
+                }
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle.fill")
+                .font(.title3)
+                .foregroundStyle(.secondary)
+                .frame(width: 44, height: 44)
+        }
+    }
+}
+
+// Update preview if you have one
+#if DEBUG
+struct MapDistanceView_Previews: PreviewProvider {
+    static var previews: some View {
+        MapDistanceView(distance: .constant(""))
+            .environmentObject(CommonLocationsViewModel())
+    }
+}
+#endif 

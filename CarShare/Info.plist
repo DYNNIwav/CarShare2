@@ -22,15 +22,26 @@
 		<string>MKDirectionsModeCar</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your precise location to accurately calculate trip distances between addresses.</string>
+	<string>We need your location to track trips and calculate distances.</string>
 	
 	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
 	<dict>
 		<key>NSLocationUsageDescription</key>
-		<string>We need precise location access to accurately calculate trip distances.</string>
+		<string>We need precise location access to accurately show your position and calculate trip distances.</string>
 	</dict>
 	
-	<key>NSLocationDefaultAccuracyReduced</key>
-	<false/>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict/>
+	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need continuous access to your location to track trips accurately, even when the app is in the background.</string>
 </dict>
 </plist>

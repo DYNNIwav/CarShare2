@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct CarShareApp: App {
+    @StateObject private var carShareViewModel = CarShareViewModel()
+    @StateObject private var commonLocationsViewModel = CommonLocationsViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(carShareViewModel)
+                .environmentObject(commonLocationsViewModel)
         }
     }
 }

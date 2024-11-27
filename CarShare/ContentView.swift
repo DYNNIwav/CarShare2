@@ -1,13 +1,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = CarShareViewModel()
-    
     var body: some View {
         TabView {
             CarsView()
                 .tabItem {
-                    Label("Cars", systemImage: "car.2.fill")
+                    Label("Cars", systemImage: "car.fill")
                 }
             
             HistoryView()
@@ -17,10 +15,19 @@ struct ContentView: View {
             
             SummaryView()
                 .tabItem {
-                    Label("Summary", systemImage: "chart.bar.fill")
+                    Label("Summary", systemImage: "chart.pie.fill")
+                }
+            
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
+            
+            TripTrackingView()
+                .tabItem {
+                    Label("Track", systemImage: "location.fill")
                 }
         }
-        .environmentObject(viewModel)
     }
 }
 
@@ -29,6 +36,8 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(CarShareViewModel())
+            .environmentObject(CommonLocationsViewModel())
     }
 }
 #endif

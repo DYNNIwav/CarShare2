@@ -119,9 +119,11 @@ class CarShareViewModel: ObservableObject {
         }
     }
     
-    func deleteTrip(_ trip: Trip) {
-        trips.removeAll { $0.id == trip.id }
-        saveData()
+    func deleteTrip(_ tripId: UUID) {
+        if let index = trips.firstIndex(where: { $0.id == tripId }) {
+            trips.remove(at: index)
+            saveTripsToDisk()
+        }
     }
     
     func getTrips(for carId: UUID) -> [Trip] {

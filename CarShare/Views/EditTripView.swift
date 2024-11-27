@@ -29,7 +29,7 @@ struct EditTripView: View {
         _distance = State(initialValue: String(format: "%.1f", trip.distance))
         _purpose = State(initialValue: trip.purpose)
         _selectedZone = State(initialValue: trip.zone)
-        _selectedParticipantIds = State(initialValue: trip.participantIds)
+        _selectedParticipantIds = State(initialValue: Set(trip.participantIds))
         _additionalCosts = State(initialValue: trip.additionalCosts)
     }
     
@@ -112,33 +112,20 @@ struct EditTripView: View {
                 }
             }
             
-            if let distanceValue = Double(distance) {
-                Section("Cost Summary") {
-                    let distanceCost = distanceValue * selectedZone.ratePerKm
-                    LabeledContent("Distance (\(String(format: "%.1f", distanceValue)) km)", value: String(format: "%.2f kr", distanceCost))
-                    
-                    if !additionalCosts.isEmpty {
-                        Divider()
-                        ForEach(additionalCosts) { cost in
-                            LabeledContent("\(cost.description) (paid by \(viewModel.participants.first(where: { $0.id == cost.paidByParticipantId })?.name ?? "Unknown"))", 
-                                value: String(format: "%.2f kr", cost.amount))
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        let totalExtra = additionalCosts.reduce(0) { $0 + $1.amount }
-                        LabeledContent("Total Additional", value: String(format: "%.2f kr", totalExtra))
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Divider()
-                    let totalCost = distanceCost + additionalCosts.reduce(0) { $0 + $1.amount }
-                    LabeledContent("Total Cost", value: String(format: "%.2f kr", totalCost))
-                        .font(.headline)
-                    
-                    if !selectedParticipantIds.isEmpty {
-                        let costPerPerson = totalCost / Double(selectedParticipantIds.count)
-                        LabeledContent("Cost per Person", value: String(format: "%.2f kr", costPerPerson))
-                    }
+            let distanceValue = Double(distance) ?? 0
+            let distanceCost = distanceValue * selectedZone.ratePerKm
+            let additionalCostsTotal = additionalCosts.reduce(0) { $0 + $1.amount }
+            let totalCost = distanceCost + additionalCostsTotal
+            let costPerPerson = selectedParticipantIds.isEmpty ? 0 : totalCost / Double(selectedParticipantIds.count)
+            
+            Section("Cost Summary") {
+                LabeledContent("Distance Cost", value: String(format: "%.2f kr", distanceCost))
+                if !additionalCosts.isEmpty {
+                    LabeledContent("Additional Costs", value: String(format: "%.2f kr", additionalCostsTotal))
+                }
+                LabeledContent("Total Cost", value: String(format: "%.2f kr", totalCost))
+                if !selectedParticipantIds.isEmpty {
+                    LabeledContent("Cost per Person", value: String(format: "%.2f kr", costPerPerson))
                 }
             }
         }
@@ -161,7 +148,7 @@ struct EditTripView: View {
                             distance: distanceValue,
                             purpose: purpose,
                             zone: selectedZone,
-                            participantIds: selectedParticipantIds,
+                            participantIds: Array(selectedParticipantIds),
                             additionalCosts: additionalCosts
                         )
                         viewModel.updateTrip(updatedTrip)
@@ -191,7 +178,7 @@ struct EditTripView: View {
             distance = String(format: "%.1f", trip.distance)
             purpose = trip.purpose
             selectedZone = trip.zone
-            selectedParticipantIds = trip.participantIds
+            selectedParticipantIds = Set(trip.participantIds)
             additionalCosts = trip.additionalCosts
         }
     }
