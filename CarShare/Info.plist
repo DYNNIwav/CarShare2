@@ -2,18 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>vipps</string>
-    </array>
-    <key>LSSupportsOpeningDocumentsInPlace</key>
-    <true/>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>We need your location to calculate trip distances between addresses</string>
-    <key>NSLocationUsageDescription</key>
-    <string>We need your location to calculate trip distances between addresses</string>
-    <key>NSLocationDefaultAccuracyReduced</key>
-    <true/>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -25,9 +13,24 @@
 			</array>
 		</dict>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>vipps</string>
+	</array>
 	<key>MKDirectionsApplicationSupportedModes</key>
 	<array>
 		<string>MKDirectionsModeCar</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your precise location to accurately calculate trip distances between addresses.</string>
+	
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>NSLocationUsageDescription</key>
+		<string>We need precise location access to accurately calculate trip distances.</string>
+	</dict>
+	
+	<key>NSLocationDefaultAccuracyReduced</key>
+	<false/>
 </dict>
 </plist>

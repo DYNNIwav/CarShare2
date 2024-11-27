@@ -24,18 +24,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		64A3DF542CF6736100BC1875 /* CarShare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarShare.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		64A3DF652CF6736200BC1875 /* CarShareTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CarShareTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		64A3DF6F2CF6736200BC1875 /* CarShareUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CarShareUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		64A3DF542CF6736100BC1875 /* CarShare Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CarShare Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		64A3DF652CF6736200BC1875 /* CarShare ProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CarShare ProTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		64A3DF6F2CF6736200BC1875 /* CarShare ProUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CarShare ProUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		64A3DF9B2CF678A600BC1875 /* Exceptions for "CarShare" folder in "CarShare" target */ = {
+		64A3DF9B2CF678A600BC1875 /* Exceptions for "CarShare" folder in "CarShare Pro" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 64A3DF532CF6736100BC1875 /* CarShare */;
+			target = 64A3DF532CF6736100BC1875 /* CarShare Pro */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -43,7 +43,7 @@
 		64A3DF562CF6736100BC1875 /* CarShare */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				64A3DF9B2CF678A600BC1875 /* Exceptions for "CarShare" folder in "CarShare" target */,
+				64A3DF9B2CF678A600BC1875 /* Exceptions for "CarShare" folder in "CarShare Pro" target */,
 			);
 			path = CarShare;
 			sourceTree = "<group>";
@@ -98,9 +98,9 @@
 		64A3DF552CF6736100BC1875 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				64A3DF542CF6736100BC1875 /* CarShare.app */,
-				64A3DF652CF6736200BC1875 /* CarShareTests.xctest */,
-				64A3DF6F2CF6736200BC1875 /* CarShareUITests.xctest */,
+				64A3DF542CF6736100BC1875 /* CarShare Pro.app */,
+				64A3DF652CF6736200BC1875 /* CarShare ProTests.xctest */,
+				64A3DF6F2CF6736200BC1875 /* CarShare ProUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,9 +108,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		64A3DF532CF6736100BC1875 /* CarShare */ = {
+		64A3DF532CF6736100BC1875 /* CarShare Pro */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 64A3DF792CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShare" */;
+			buildConfigurationList = 64A3DF792CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShare Pro" */;
 			buildPhases = (
 				64A3DF502CF6736100BC1875 /* Sources */,
 				64A3DF512CF6736100BC1875 /* Frameworks */,
@@ -123,16 +123,16 @@
 			fileSystemSynchronizedGroups = (
 				64A3DF562CF6736100BC1875 /* CarShare */,
 			);
-			name = CarShare;
+			name = "CarShare Pro";
 			packageProductDependencies = (
 			);
 			productName = CarShare;
-			productReference = 64A3DF542CF6736100BC1875 /* CarShare.app */;
+			productReference = 64A3DF542CF6736100BC1875 /* CarShare Pro.app */;
 			productType = "com.apple.product-type.application";
 		};
-		64A3DF642CF6736200BC1875 /* CarShareTests */ = {
+		64A3DF642CF6736200BC1875 /* CarShare ProTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 64A3DF7C2CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShareTests" */;
+			buildConfigurationList = 64A3DF7C2CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShare ProTests" */;
 			buildPhases = (
 				64A3DF612CF6736200BC1875 /* Sources */,
 				64A3DF622CF6736200BC1875 /* Frameworks */,
@@ -146,16 +146,16 @@
 			fileSystemSynchronizedGroups = (
 				64A3DF682CF6736200BC1875 /* CarShareTests */,
 			);
-			name = CarShareTests;
+			name = "CarShare ProTests";
 			packageProductDependencies = (
 			);
 			productName = CarShareTests;
-			productReference = 64A3DF652CF6736200BC1875 /* CarShareTests.xctest */;
+			productReference = 64A3DF652CF6736200BC1875 /* CarShare ProTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		64A3DF6E2CF6736200BC1875 /* CarShareUITests */ = {
+		64A3DF6E2CF6736200BC1875 /* CarShare ProUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 64A3DF7F2CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShareUITests" */;
+			buildConfigurationList = 64A3DF7F2CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShare ProUITests" */;
 			buildPhases = (
 				64A3DF6B2CF6736200BC1875 /* Sources */,
 				64A3DF6C2CF6736200BC1875 /* Frameworks */,
@@ -169,11 +169,11 @@
 			fileSystemSynchronizedGroups = (
 				64A3DF722CF6736200BC1875 /* CarShareUITests */,
 			);
-			name = CarShareUITests;
+			name = "CarShare ProUITests";
 			packageProductDependencies = (
 			);
 			productName = CarShareUITests;
-			productReference = 64A3DF6F2CF6736200BC1875 /* CarShareUITests.xctest */;
+			productReference = 64A3DF6F2CF6736200BC1875 /* CarShare ProUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -199,7 +199,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 64A3DF4F2CF6736100BC1875 /* Build configuration list for PBXProject "CarShare" */;
+			buildConfigurationList = 64A3DF4F2CF6736100BC1875 /* Build configuration list for PBXProject "CarShare Pro" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -213,9 +213,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				64A3DF532CF6736100BC1875 /* CarShare */,
-				64A3DF642CF6736200BC1875 /* CarShareTests */,
-				64A3DF6E2CF6736200BC1875 /* CarShareUITests */,
+				64A3DF532CF6736100BC1875 /* CarShare Pro */,
+				64A3DF642CF6736200BC1875 /* CarShare ProTests */,
+				64A3DF6E2CF6736200BC1875 /* CarShare ProUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -271,12 +271,12 @@
 /* Begin PBXTargetDependency section */
 		64A3DF672CF6736200BC1875 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 64A3DF532CF6736100BC1875 /* CarShare */;
+			target = 64A3DF532CF6736100BC1875 /* CarShare Pro */;
 			targetProxy = 64A3DF662CF6736200BC1875 /* PBXContainerItemProxy */;
 		};
 		64A3DF712CF6736200BC1875 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 64A3DF532CF6736100BC1875 /* CarShare */;
+			target = 64A3DF532CF6736100BC1875 /* CarShare Pro */;
 			targetProxy = 64A3DF702CF6736200BC1875 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -410,6 +410,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CarShare/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSLocationUsageDescription = "We need your location to calculate trip distances between addresses";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate trip distances between addresses";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -425,7 +428,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.7;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dynni.CarShare;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dynni.CarSharePro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
@@ -450,6 +453,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CarShare/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSLocationUsageDescription = "We need your location to calculate trip distances between addresses";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to calculate trip distances between addresses";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -465,7 +471,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.7;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dynni.CarShare;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dynni.CarSharePro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
@@ -494,7 +500,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarShare.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarShare";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarShare Pro.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarShare Pro";
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Debug;
@@ -517,7 +523,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarShare.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarShare";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CarShare Pro.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CarShare Pro";
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Release;
@@ -569,7 +575,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		64A3DF4F2CF6736100BC1875 /* Build configuration list for PBXProject "CarShare" */ = {
+		64A3DF4F2CF6736100BC1875 /* Build configuration list for PBXProject "CarShare Pro" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				64A3DF772CF6736200BC1875 /* Debug */,
@@ -578,7 +584,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		64A3DF792CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShare" */ = {
+		64A3DF792CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShare Pro" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				64A3DF7A2CF6736200BC1875 /* Debug */,
@@ -587,7 +593,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		64A3DF7C2CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShareTests" */ = {
+		64A3DF7C2CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShare ProTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				64A3DF7D2CF6736200BC1875 /* Debug */,
@@ -596,7 +602,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		64A3DF7F2CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShareUITests" */ = {
+		64A3DF7F2CF6736200BC1875 /* Build configuration list for PBXNativeTarget "CarShare ProUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				64A3DF802CF6736200BC1875 /* Debug */,

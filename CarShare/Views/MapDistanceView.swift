@@ -363,7 +363,6 @@ struct MapDistanceView: View {
         }
         .onAppear {
             locationManager.requestLocationPermission()
-            locationManager.startUpdatingLocation()
         }
         .onDisappear {
             locationManager.stopUpdatingLocation()

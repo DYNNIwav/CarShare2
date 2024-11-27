@@ -26,7 +26,15 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func requestLocationPermission() {
-        locationManager.requestWhenInUseAuthorization()
+        if authorizationStatus == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+        } else if authorizationStatus == .authorizedWhenInUse || authorizationStatus == .authorizedAlways {
+            if #available(iOS 14.0, *) {
+                locationManager.requestTemporaryFullAccuracyAuthorization(
+                    withPurposeKey: "NSLocationUsageDescription"
+                )
+            }
+        }
     }
     
     func requestAlwaysPermission() {
@@ -34,11 +42,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func startUpdatingLocation() {
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.startUpdatingLocation()
-        } else {
-            error = "Location services are disabled"
-        }
+        locationManager.startUpdatingLocation()
     }
     
     func stopUpdatingLocation() {
@@ -57,7 +61,12 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             
             switch authorizationStatus {
             case .authorizedWhenInUse, .authorizedAlways:
-                startUpdatingLocation()
+                if #available(iOS 14.0, *) {
+                    manager.requestTemporaryFullAccuracyAuthorization(
+                        withPurposeKey: "NSLocationUsageDescription"
+                    )
+                }
+                manager.startUpdatingLocation()
             case .denied, .restricted:
                 error = "Location access denied"
                 stopUpdatingLocation()
@@ -77,7 +86,18 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         Task { @MainActor in
-            self.error = error.localizedDescription
+            if let clError = error as? CLError {
+                switch clError.code {
+                case .denied:
+                    self.error = "Location services are disabled"
+                case .locationUnknown:
+                    self.error = "Unable to determine location"
+                default:
+                    self.error = error.localizedDescription
+                }
+            } else {
+                self.error = error.localizedDescription
+            }
         }
     }
     
